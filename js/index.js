@@ -33,29 +33,51 @@ const rowTable = `<div class="row">
 </div>`;
 
 function showData(data) {
-  defaultValueTable();
+  defaultValueTable(data);
+  removeTextNode();
 
   devizYears.addEventListener("change", () => {
-    callAll();
+    callAll(data);
+    searchInput.value = '';
   });
 
   devizMonths.addEventListener("change", () => {
-    callAll();
+    callAll(data);
+    searchInput.value = '';
   });
 
-  function callAll(){
-    differentValues();
-    defaultValueTable();
-    caseOne();
-    caseTwo();
+  searchBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const filtered = data.filter(item => item.deviz.toLowerCase().includes(searchInput.value.toLowerCase()));
+    callAll(filtered);
+  });
+
+  function callAll(dataArr){
+    differentValues(dataArr);
+    defaultValueTable(dataArr);
+    caseOne(dataArr);
+    caseTwo(dataArr);
+    removeTextNode();
   }
 
-  function caseOne(){
+  function removeTextNode(){
+    const childNodes = document.querySelector('.table-deviz-grid').childNodes;
+
+    for (let i = 0; i < childNodes.length; i++) {
+        const node = childNodes[i];
+
+        if (node.nodeType === Node.TEXT_NODE) {
+            document.querySelector('.table-deviz-grid').removeChild(node);
+        }
+    }
+  }
+
+  function caseOne(dataArr){
     if (devizMonths.value !== "All" && devizYears.value === "All") {
         table.innerHTML = "";
         table.innerHTML = `
                           ${mainRowTable}
-                          ${data.map((item) => {
+                          ${dataArr.map((item) => {
                             const str = item.deviz;
                             const month = str.substring(
                               str.indexOf(".") + 1,
@@ -78,12 +100,12 @@ function showData(data) {
       }
   }
 
-  function caseTwo(){
+  function caseTwo(dataArr){
     if (devizYears.value !== "All" && devizMonths.value === "All") {
         table.innerHTML = "";
         table.innerHTML = `
                           ${mainRowTable}
-                          ${data.map((item) => {
+                          ${dataArr.map((item) => {
                             const str = item.deviz;
                             const year = str.substring(str.lastIndexOf(".") + 1);
   
@@ -103,11 +125,11 @@ function showData(data) {
       }
   }
 
-  function differentValues() {
+  function differentValues(dataArr) {
     table.innerHTML = "";
     table.innerHTML = `
                         ${mainRowTable}
-                        ${data.map((item) => {
+                        ${dataArr.map((item) => {
                           const str = item.deviz;
                           const month = str.substring(
                             str.indexOf(".") + 1,
@@ -133,12 +155,12 @@ function showData(data) {
                     `;
   }
 
-  function defaultValueTable() {
+  function defaultValueTable(dataArr) {
     if (devizYears.value === "All" && devizMonths.value === "All") {
       table.innerHTML = "";
       table.innerHTML = `
       ${mainRowTable}
-                ${data.map((item) => {
+                ${dataArr.map((item) => {
                   return `
                         <div class="row">
                             <div>${item.deviz}</div>
@@ -153,3 +175,28 @@ function showData(data) {
     }
   }
 }
+
+addDevizBtn.addEventListener('click', () => {
+    document.querySelector('.modal-add-deviz').classList.add('show');
+}); 
+
+document.querySelector('.close-modal').addEventListener('click', () => {
+    document.querySelector('.modal-add-deviz').classList.remove('show');
+});
+
+const modalInputs = document.querySelectorAll('.modal-add-deviz input');
+
+document.querySelector('.modal-add-deviz button').addEventListener('click', () => {
+    let isFilled = true;
+    modalInputs.forEach(item => {
+        if(item.value === ''){
+            isFilled = false;
+            return;
+        }
+    });
+    if(isFilled){
+        alert('Thx, but this job is for backend dev :))');
+    } else {
+        alert('Please fill all inputs');
+    }
+});
