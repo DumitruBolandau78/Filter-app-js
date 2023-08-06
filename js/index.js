@@ -186,7 +186,8 @@ document.querySelector('.close-modal').addEventListener('click', () => {
 
 const modalInputs = document.querySelectorAll('.modal-add-deviz input');
 
-document.querySelector('.modal-add-deviz button').addEventListener('click', () => {
+document.querySelector('.modal-add-deviz button').addEventListener('click', (e) => {
+    e.preventDefault();
     let isFilled = true;
     modalInputs.forEach(item => {
         if(item.value === ''){
