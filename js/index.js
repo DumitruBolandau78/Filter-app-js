@@ -1,6 +1,6 @@
 "use strict";
 
-const API = "../data/data.json";
+const API = "data/data.json";
 const dataServer = fetch(API)
   .then((res) => res.json())
   .then((data) => showData(data))
